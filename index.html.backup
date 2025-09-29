@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signal Digital Twin Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #ffffff;
+        }
+
+        /* Hero Section - Exact colors from AI fact checker */
+        .hero {
+            background: linear-gradient(135deg, #1a365d 0%, #2d5a87 50%, #4a90a4 100%);
+            color: white;
+            padding: 50px 0 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+            line-height: 1.2;
+        }
+
+        .hero .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 0;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Upload Section - Exact colors from AI fact checker */
+        .upload-section {
+            padding: 20px 0;
+            background: #f8fafc;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.2rem;
+            color: #1a365d;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: #4a5568;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .upload-form {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group:first-of-type {
+            margin-top: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            color: #1a365d;
+            font-size: 0.9rem;
+        }
+
+        .form-group .description {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 0.6rem;
+            line-height: 1.4;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            line-height: 1.4;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4a90a4;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+            line-height: 1.5;
+            padding: 0.75rem 0.75rem 1rem 0.75rem;
+        }
+
+        .form-control::placeholder {
+            color: #a0aec0;
+            font-size: 0.85rem;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #cbd5e0;
+            border-radius: 10px;
+            padding: 0.75rem;
+            text-align: center;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            min-height: 80px;
+            margin-bottom: 10px;
+        }
+
+        .file-upload-area:hover {
+            border-color: #4a90a4;
+            background: #f1f9ff;
+        }
+
+        .upload-text {
+            font-size: 0.8rem;
+            color: #4a5568;
+            margin-bottom: 0.2rem;
+            font-weight: 500;
+        }
+
+        .upload-subtext {
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+
+        .file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .uploaded-files {
+            margin-top: 1rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: #e6f3ff;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid #4a90a4;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: #1a365d;
+        }
+
+        .file-size {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .remove-file {
+            background: none;
+            border: none;
+            color: #e53e3e;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.25rem;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #2d5a87, #4a90a4);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 2rem auto 0;
+            min-width: 200px;
+            font-weight: 600;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(45, 90, 135, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #2d5a87, #4a90a4);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            font-weight: 600;
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(45, 90, 135, 0.3);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            box-shadow: 0 3px 10px rgba(149, 165, 166, 0.2);
+        }
+
+        .btn.secondary:hover {
+            background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+            box-shadow: 0 5px 15px rgba(149, 165, 166, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .status-success {
+            background: #efe;
+            border: 1px solid #cfc;
+            color: #363;
+        }
+
+        .status-error {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+        }
+
+        .status-loading {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        .poll-results {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .poll-results h3 {
+            color: #1a365d;
+            margin-bottom: 20px;
+            margin-top: 0;
+        }
+
+        .poll-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .poll-metric {
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .poll-metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d5a87;
+            margin-bottom: 4px;
+        }
+
+        .poll-metric-label {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .poll-details {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .poll-response {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 3px solid #4a90a4;
+        }
+
+        .poll-response-header {
+            font-weight: 600;
+            color: #1a365d;
+            margin-bottom: 8px;
+        }
+
+        .poll-response-text {
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .chat-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            background: #f8fafc;
+        }
+
+        .chat-message {
+            margin-bottom: 16px;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .chat-message.user {
+            background: linear-gradient(135deg, #2d5a87, #4a90a4);
+            color: white;
+            margin-left: 20%;
+        }
+
+        .chat-message.persona {
+            background: white;
+            border: 1px solid #e2e8f0;
+            margin-right: 20%;
+            color: #333;
+        }
+
+        .chat-message .sender {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .persona-count {
+            margin: 20px 0;
+            padding: 16px;
+            background: #e6f3ff;
+            border: 1px solid #4a90a4;
+            border-radius: 8px;
+            color: #1a365d;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 30px 0;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4a90a4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .upload-form {
+                padding: 2rem;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .poll-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Signal Digital Twin Platform</h1>
+            <p class="subtitle">AI-powered persona modeling for legal advertising</p>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <section class="upload-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Generate & Test</h2>
+                <p>Generate digital twins and test messaging before spending campaign dollars.</p>
+            </div>
+
+            <div class="main-content">
+                <!-- Generate Personas Card -->
+                <div class="upload-form">
+                    <h2 style="color: #1a365d; margin-bottom: 1rem; font-size: 1.3rem; font-weight: 600;">Generate Digital Twins</h2>
+                    <p class="description">Create AI personas based on your case data, target audience, and social insights.</p>
+                    
+                    <form id="generateForm">
+                        <div class="form-group">
+                            <label for="matter">Project Name</label>
+                            <input type="text" id="matter" name="matter" class="form-control" placeholder="e.g., Ultra-processed Foods Campaign, Personal Injury Q3, Mass Tort Analysis" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="target_description">Target Audience Description</label>
+                            <textarea id="target_description" name="target_description" class="form-control" placeholder="Describe your ideal clients..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="keywords">Search Keywords</label>
+                            <input type="text" id="keywords" name="keywords" class="form-control" placeholder="e.g., diabetes, food companies, legal action" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="persona_count">Number of Personas (1-100)</label>
+                            <input type="number" id="persona_count" name="persona_count" class="form-control" min="1" max="100" placeholder="e.g., 15" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Your Email (for report delivery)</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="your@email.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="julius_personas_sheet_url">Julius Personas Google Sheet URL (Optional)</label>
+                            <p class="description">If you have pre-existing personas from Julius, paste the Google Sheets URL here to enrich them instead of generating new ones</p>
+                            <input type="url" id="julius_personas_sheet_url" name="julius_personas_sheet_url" class="form-control" placeholder="https://docs.google.com/spreadsheets/d/...">
+                            <small class="form-text text-muted">Leave empty to generate new personas from scratch</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Upload Background Documents (Optional)</label>
+                            <p class="description">Upload legal documents and research files to provide context for persona enrichment</p>
+
+                            <div class="file-upload-area">
+                                <div class="upload-text">Click to browse or drag legal documents here</div>
+                                <div class="upload-subtext">PDF files only, up to 10MB</div>
+                                <input type="file" id="complaint_file" name="complaint_file" class="file-input" accept=".pdf">
+                                <input type="hidden" id="complaint_file_url" name="complaint_file_url">
+                                <span id="complaintStatus"></span>
+                            </div>
+                            <div class="uploaded-files" id="complaintFiles"></div>
+
+                            <div class="file-upload-area">
+                                <div class="upload-text">Click to browse or drag research files here</div>
+                                <div class="upload-subtext">PDF files only, up to 10MB</div>
+                                <input type="file" id="research_file" name="research_file" class="file-input" accept=".pdf">
+                                <input type="hidden" id="research_file_url" name="research_file_url">
+                                <span id="researchStatus"></span>
+                            </div>
+                            <div class="uploaded-files" id="researchFiles"></div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="creatives_text">Ad Creatives (Text Format)</label>
+                            <textarea id="creatives_text" class="form-control" placeholder="Enter each ad creative on a new line:&#10;&#10;Headline: Get Justice Now&#10;Body: Free consultation for your case...&#10;Image Description: Professional lawyer in office&#10;&#10;Headline: We Fight For You&#10;Body: Experienced legal team ready to help...&#10;Image Description: Legal team reviewing documents" rows="6"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Upload Ad Creative Images (Optional - up to 10)</label>
+                            <p class="description">Upload multiple images for your ad creatives</p>
+                            
+                            <div class="file-upload-area">
+                                <div class="upload-text">Click to browse or drag multiple images here</div>
+                                <div class="upload-subtext">Select up to 10 images (JPG, PNG, GIF up to 5MB each)</div>
+                                <input type="file" id="creative_images" name="creative_images" class="file-input" accept=".jpg,.jpeg,.png,.gif" multiple>
+                            </div>
+                            <div class="uploaded-files" id="creativeImageFiles"></div>
+                        </div>
+
+                        <button type="submit" class="submit-btn" id="generateBtn">
+                            Generate Digital Twins
+                        </button>
+                    </form>
+
+                    <div id="generateStatus" class="status-message"></div>
+                </div>
+
+                <!-- Poll All Personas Card -->
+                <div class="upload-form">
+                    <h2 style="color: #1a365d; margin-bottom: 1rem; font-size: 1.3rem; font-weight: 600;">Poll All Personas</h2>
+                    <p class="description">Ask a question to ALL personas at once and get percentage breakdowns of responses.</p>
+
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label for="pollQuestion">Question for All Personas</label>
+                        <p class="description">Ask any question and get responses from all generated personas</p>
+                        <textarea id="pollQuestion" class="form-control" placeholder="Example: How likely are you to contact a law firm that offers free consultation? What factors would influence your decision?" rows="3"></textarea>
+                    </div>
+
+                    <button class="btn" id="pollAllBtn">
+                        Poll All Personas
+                    </button>
+
+                    <div id="pollResults" class="poll-results" style="display: none;">
+                        <h3>Poll Results</h3>
+                        <div id="pollSummary" class="poll-summary"></div>
+                        <div id="pollDetails" class="poll-details"></div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 style="color: #1a365d; font-size: 1.1rem; margin-bottom: 1rem; font-weight: 600;">Individual Chat</h3>
+                    <p class="description">Describe the type of persona you want to chat with, and we'll create one for you.</p>
+
+                    <div id="personaCreationInterface">
+                        <div class="form-group">
+                            <label for="personaAttributes">Describe Your Ideal Persona</label>
+                            <textarea id="personaAttributes" class="form-control" placeholder="Example: 45-year-old professional from Texas, household income $75k, parent of two teenagers, college educated, researches decisions thoroughly, cautious about legal commitments" rows="3"></textarea>
+                        </div>
+
+                        <button class="btn" id="createPersonaBtn">
+                            Create & Chat with This Persona
+                        </button>
+                    </div>
+
+                    <div id="chatInterface" style="display: none;">
+                        <div id="currentPersonaInfo" class="persona-count" style="margin-bottom: 1rem;">
+                            <!-- Current persona info will be displayed here -->
+                        </div>
+
+                        <div id="chatContainer" class="chat-container">
+                            <div class="chat-message persona">
+                                <div class="sender">System</div>
+                                Describe a persona above to start chatting!
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" id="chatInput" class="form-control" placeholder="Type your message..." disabled>
+                        </div>
+
+                        <button class="btn" id="sendChatBtn" disabled>
+                            Send Message
+                        </button>
+
+                        <button class="btn secondary" id="newPersonaBtn" style="margin-top: 0.5rem;">
+                            Create Different Persona
+                        </button>
+                    </div>
+
+                    <div id="chatStatus" class="status-message"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+       // Configuration - Point to Vercel deployment
+window.CONFIG = {
+    generateWorkflowUrl: '/api/generate-personas-v2',
+    chatEndpointUrl: '/api/chat-persona'
+};
+
+        // Global Variables
+        let selectedPersona = null;
+        let availablePersonas = [];
+
+        // DOM Elements
+        const generateForm = document.getElementById('generateForm');
+        const generateBtn = document.getElementById('generateBtn');
+        const generateStatus = document.getElementById('generateStatus');
+
+        console.log('🔍 DOM Elements Check:');
+        console.log('generateForm:', generateForm);
+        console.log('generateBtn:', generateBtn);
+        console.log('generateStatus:', generateStatus);
+        const pollQuestion = document.getElementById('pollQuestion');
+        const pollAllBtn = document.getElementById('pollAllBtn');
+        const pollResults = document.getElementById('pollResults');
+        const pollSummary = document.getElementById('pollSummary');
+        const pollDetails = document.getElementById('pollDetails');
+        const personaCreationInterface = document.getElementById('personaCreationInterface');
+        const personaAttributes = document.getElementById('personaAttributes');
+        const createPersonaBtn = document.getElementById('createPersonaBtn');
+        const currentPersonaInfo = document.getElementById('currentPersonaInfo');
+        const chatInterface = document.getElementById('chatInterface');
+        const chatContainer = document.getElementById('chatContainer');
+        const chatInput = document.getElementById('chatInput');
+        const sendChatBtn = document.getElementById('sendChatBtn');
+        const newPersonaBtn = document.getElementById('newPersonaBtn');
+        const chatStatus = document.getElementById('chatStatus');
+
+        // Utility Functions
+        function showStatus(element, message, type) {
+            element.className = `status-message status-${type}`;
+            element.textContent = message;
+            element.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 8000);
+            }
+        }
+
+        function showLoading(button, originalText) {
+            button.disabled = true;
+            button.innerHTML = `<span class="loading-spinner"></span>${originalText}`;
+        }
+
+        function hideLoading(button, originalText) {
+            button.disabled = false;
+            button.innerHTML = originalText;
+        }
+
+        // Convert text creatives to JSON format
+        function parseCreativesText(text) {
+            if (!text.trim()) return [];
+            
+            const creatives = [];
+            const lines = text.split('\n').map(line => line.trim()).filter(line => line);
+            
+            let currentCreative = {};
+            
+            for (const line of lines) {
+                if (line.toLowerCase().startsWith('headline:')) {
+                    if (currentCreative.headline) {
+                        creatives.push(currentCreative);
+                        currentCreative = {};
+                    }
+                    currentCreative.headline = line.substring(9).trim();
+                } else if (line.toLowerCase().startsWith('body:')) {
+                    currentCreative.body = line.substring(5).trim();
+                } else if (line.toLowerCase().startsWith('image description:') || line.toLowerCase().startsWith('image:')) {
+                    const prefix = line.toLowerCase().startsWith('image description:') ? 'image description:' : 'image:';
+                    currentCreative.image_description = line.substring(prefix.length).trim();
+                } else if (line && !line.toLowerCase().includes(':')) {
+                    if (currentCreative.body) {
+                        currentCreative.body += ' ' + line;
+                    } else {
+                        currentCreative.body = line;
+                    }
+                }
+            }
+            
+            if (currentCreative.headline) {
+                creatives.push(currentCreative);
+            }
+            
+            return creatives;
+        }
+
+        // Handle multiple file uploads
+        function handleMultipleFileUpload(inputId, displayId, maxFiles = 10) {
+            const input = document.getElementById(inputId);
+            const display = document.getElementById(displayId);
+            
+            input.addEventListener('change', function(e) {
+                display.innerHTML = '';
+                const files = Array.from(e.target.files).slice(0, maxFiles); // Limit to maxFiles
+                
+                if (files.length === 0) return;
+                
+                if (files.length > maxFiles) {
+                    showStatus(generateStatus, `Only the first ${maxFiles} images will be used.`, 'error');
+                }
+                
+                files.forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
+                        <div class="file-info">
+                            <span class="file-name">Image ${index + 1}: ${file.name}</span>
+                            <span class="file-size">(${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                        </div>
+                        <button type="button" class="remove-file" onclick="removeMultipleFile('${inputId}', ${index})">×</button>
+                    `;
+                    display.appendChild(fileItem);
+                });
+            });
+        }
+
+        function removeMultipleFile(inputId, index) {
+            const input = document.getElementById(inputId);
+            const dt = new DataTransfer();
+            const files = Array.from(input.files);
+            
+            files.forEach((file, i) => {
+                if (i !== index) dt.items.add(file);
+            });
+            
+            input.files = dt.files;
+            input.dispatchEvent(new Event('change'));
+        }
+
+        // File upload handling
+        function handleFileUpload(inputId, displayId) {
+            const input = document.getElementById(inputId);
+            const display = document.getElementById(displayId);
+            
+            input.addEventListener('change', function(e) {
+                display.innerHTML = '';
+                const files = Array.from(e.target.files);
+                
+                if (files.length === 0) return;
+                
+                files.forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
+                        <div class="file-info">
+                            <span class="file-name">${file.name}</span>
+                            <span class="file-size">(${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                        </div>
+                        <button type="button" class="remove-file" onclick="removeFile('${inputId}', ${index})">×</button>
+                    `;
+                    display.appendChild(fileItem);
+                });
+            });
+        }
+
+        function removeFile(inputId, index) {
+            const input = document.getElementById(inputId);
+            const dt = new DataTransfer();
+            const files = Array.from(input.files);
+            
+            files.forEach((file, i) => {
+                if (i !== index) dt.items.add(file);
+            });
+            
+            input.files = dt.files;
+            input.dispatchEvent(new Event('change'));
+        }
+
+        // Old form handler removed - now inside DOMContentLoaded
+
+        // Form handler moved to DOMContentLoaded section
+
+            
+            const creativesText = document.getElementById('creatives_text').value;
+            const creatives = parseCreativesText(creativesText);
+            formData.append('creatives', JSON.stringify(creatives));
+            
+            const complaintUrl = document.getElementById('complaint_file_url').value;
+            if (complaintUrl) formData.append('complaint_file_url', complaintUrl);
+
+            const researchUrl = document.getElementById('research_file_url').value;
+            if (researchUrl) formData.append('research_file_url', researchUrl);
+            
+            // Add image files with proper field names for n8n
+            const imageInput = document.getElementById('creative_images');
+            if (imageInput.files.length > 0) {
+                const imageFiles = Array.from(imageInput.files).slice(0, 10); // Limit to 10
+                imageFiles.forEach((file, index) => {
+                    formData.append(`image_${index}`, file);
+                });
+            }
+            
+            showLoading(generateBtn, 'Generating Digital Twins...');
+            showStatus(generateStatus, 'Processing your request... This may take 2-3 minutes. You will receive the report via email.', 'loading');
+            
+            try {
+                console.log('🚀 Submitting form to:', window.CONFIG.generateWorkflowUrl);
+                console.log('📋 Form data:', Object.fromEntries(formData.entries()));
+
+                const response = await fetch(window.CONFIG.generateWorkflowUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                console.log('📡 Response status:', response.status);
+                console.log('📡 Response headers:', response.headers);
+
+                if (response.ok) {
+                    showStatus(generateStatus, 
+                        'Digital twins generation started successfully! You will receive the report via email within a few minutes.', 
+                        'success'
+                    );
+                    
+                    // Start countdown for when personas will be ready
+                    startPersonaCountdown();
+                    
+                    generateForm.reset();
+                    // Reset image display
+                    document.getElementById('creativeImageFiles').innerHTML = '';
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('❌ Form submission error:', error);
+                console.error('❌ Error details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    name: error.name
+                });
+                showStatus(generateStatus,
+                    `Error generating digital twins: ${error.message}. Please check your network connection and try again.`,
+                    'error'
+                );
+            } finally {
+                hideLoading(generateBtn, 'Generate Digital Twins');
+            }
+        });
+        } // Close the else block
+
+        // Persona Countdown Timer
+        function startPersonaCountdown() {
+            // Disable poll and chat until personas are ready (estimated 3-5 minutes)
+            const estimatedMinutes = 4; // 4 minutes estimated processing time
+            let timeRemaining = estimatedMinutes * 60; // Convert to seconds
+            
+            // Disable poll and chat interfaces
+            pollAllBtn.disabled = true;
+            pollQuestion.disabled = true;
+            createPersonaBtn.disabled = true;
+            personaAttributes.disabled = true;
+            
+            // Update button text with countdown
+            const originalPollText = pollAllBtn.textContent;
+            const originalCreateText = createPersonaBtn.textContent;
+            
+            const countdownInterval = setInterval(() => {
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                pollAllBtn.textContent = `Personas ready in ${timeString}`;
+                createPersonaBtn.textContent = `Personas ready in ${timeString}`;
+                
+                timeRemaining--;
+                
+                // When countdown reaches 0, re-enable everything
+                if (timeRemaining < 0) {
+                    clearInterval(countdownInterval);
+                    
+                    // Re-enable interfaces
+                    pollAllBtn.disabled = false;
+                    pollQuestion.disabled = false;
+                    createPersonaBtn.disabled = false;
+                    personaAttributes.disabled = false;
+                    
+                    // Restore original button text
+                    pollAllBtn.textContent = originalPollText;
+                    createPersonaBtn.textContent = originalCreateText;
+                    
+                    // Show ready message
+                    showStatus(chatStatus, '🎉 Personas are now ready! You can poll all personas or create custom personas for chat.', 'success');
+                }
+            }, 1000);
+        }
+
+        // Poll All Personas - Direct polling
+        pollAllBtn.addEventListener('click', async function() {
+            if (!pollQuestion.value.trim()) {
+                showStatus(chatStatus, 'Please enter a question to poll all personas.', 'error');
+                return;
+            }
+
+            if (pollAllBtn.disabled) {
+                showStatus(chatStatus, 'Please wait for personas to be generated first.', 'error');
+                return;
+            }
+
+            showLoading(pollAllBtn, 'Polling All Personas...');
+            
+            try {
+                // TODO: Replace with actual API call to poll personas from Google Sheets
+                // This will:
+                // 1. Read all personas from Google Sheets 
+                // 2. Send the question to each persona via n8n chat workflow
+                // 3. Aggregate responses and return summary
+                
+                showStatus(chatStatus, 'Connecting to Google Sheets to poll all generated personas...', 'loading');
+                
+                // Simulate polling delay
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                
+                showStatus(chatStatus, 'Polling functionality will be connected to your Google Sheets. This will automatically poll all generated personas.', 'error');
+                
+            } catch (error) {
+                showStatus(chatStatus, `Error polling personas: ${error.message}`, 'error');
+            } finally {
+                hideLoading(pollAllBtn, 'Poll All Personas');
+            }
+        });
+
+        // Create Custom Persona for Chat
+        createPersonaBtn.addEventListener('click', async function() {
+            if (!personaAttributes.value.trim()) {
+                showStatus(chatStatus, 'Please describe the type of persona you want to chat with.', 'error');
+                return;
+            }
+
+            if (createPersonaBtn.disabled) {
+                showStatus(chatStatus, 'Please wait for personas to be generated first.', 'error');
+                return;
+            }
+
+            showLoading(createPersonaBtn, 'Creating Persona...');
+            
+            try {
+                // Generate a custom persona based on user description
+                const customPersona = await generateCustomPersona(personaAttributes.value.trim());
+                selectedPersona = customPersona;
+                
+                // Show persona info and enable chat
+                currentPersonaInfo.innerHTML = `
+                    <strong>Chatting with:</strong> ${customPersona.name}<br>
+                    <small>${customPersona.age} years old, ${customPersona.demographics}</small><br>
+                    <small>${customPersona.bio}</small>
+                `;
+                
+                chatInterface.style.display = 'block';
+                personaCreationInterface.style.display = 'none';
+                
+                chatInput.disabled = false;
+                sendChatBtn.disabled = false;
+                chatInput.placeholder = `Ask ${customPersona.name} anything...`;
+                
+                // Clear chat and show persona intro
+                chatContainer.innerHTML = `
+                    <div class="chat-message persona">
+                        <div class="sender">${customPersona.name}</div>
+                        Hi! I'm ${customPersona.name}. ${customPersona.bio} What would you like to know?
+                    </div>
+                `;
+                
+                showStatus(chatStatus, `Created ${customPersona.name}! You can now start chatting.`, 'success');
+                
+            } catch (error) {
+                showStatus(chatStatus, `Error creating persona: ${error.message}`, 'error');
+            } finally {
+                hideLoading(createPersonaBtn, 'Create & Chat with This Persona');
+            }
+        });
+
+        // Generate Custom Persona (AI-powered)
+        async function generateCustomPersona(description) {
+            // Simulate AI persona generation - replace with actual API call
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // For now, create a persona based on common patterns in the description
+            const persona = {
+                name: generatePersonaName(description),
+                age: extractAge(description) || Math.floor(Math.random() * 30) + 25,
+                demographics: extractLocation(description) || "United States",
+                bio: `Based on your description: ${description.substring(0, 100)}...`,
+                motivations: ["seeking justice", "protecting family", "getting fair compensation"],
+                barriers: ["cost concerns", "trust issues", "time constraints"],
+                communication_style: "Direct and practical, asks pointed questions",
+                case_type: extractCaseType(description) || "Legal Services"
+            };
+            
+            return persona;
+        }
+
+        // Helper functions for persona generation
+        function generatePersonaName(description) {
+            // Remove hardcoded names - these will come from Google Sheets
+            return "Custom Persona";
+        }
+
+        function extractAge(description) {
+            const ageMatch = description.match(/(\d{1,2})[- ]?year[s]?[- ]?old|age[s]?\s+(\d{1,2})|(\d{1,2})[- ]?y[o]?/i);
+            if (ageMatch) {
+                return parseInt(ageMatch[1] || ageMatch[2] || ageMatch[3]);
+            }
+            return 35; // Default age
+        }
+
+        function extractLocation(description) {
+            // Extract geographic information from description
+            const lowerDesc = description.toLowerCase();
+            
+            // Check for national/multi-state scope
+            if (lowerDesc.includes('national') || lowerDesc.includes('nationwide') || lowerDesc.includes('all states')) {
+                return "National";
+            }
+            
+            // Check for regional indicators
+            if (lowerDesc.includes('northeast') || lowerDesc.includes('new england')) return "Northeast USA";
+            if (lowerDesc.includes('southeast') || lowerDesc.includes('south')) return "Southeast USA";
+            if (lowerDesc.includes('midwest') || lowerDesc.includes('great lakes')) return "Midwest USA";
+            if (lowerDesc.includes('southwest')) return "Southwest USA";
+            if (lowerDesc.includes('west coast') || lowerDesc.includes('pacific')) return "West Coast USA";
+            
+            // Check for specific geographic descriptors
+            if (lowerDesc.includes('rural')) return "Rural USA";
+            if (lowerDesc.includes('urban') || lowerDesc.includes('city') || lowerDesc.includes('metropolitan')) return "Urban USA";
+            if (lowerDesc.includes('suburban')) return "Suburban USA";
+            
+            // If specific state mentioned, extract it
+            const stateMatch = description.match(/\b(Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming)\b/i);
+            
+            if (stateMatch) {
+                return `${stateMatch[1]}, USA`;
+            }
+            
+            return "United States";
+        }
+
+        function extractCaseType(description) {
+            // Project name is just the matter field, no need to categorize
+            return "Legal Services Project";
+        }
+
+        // New Persona Button
+        newPersonaBtn.addEventListener('click', function() {
+            chatInterface.style.display = 'none';
+            personaCreationInterface.style.display = 'block';
+            personaAttributes.value = '';
+            selectedPersona = null;
+            
+            chatContainer.innerHTML = `
+                <div class="chat-message persona">
+                    <div class="sender">System</div>
+                    Describe a persona above to start chatting!
+                </div>
+            `;
+            
+            chatInput.disabled = true;
+            sendChatBtn.disabled = true;
+        });
+
+        // Removed getContextualAddition function - all responses now come from AI via API
+
+        // Chat Functionality
+        async function sendMessage() {
+            if (!selectedPersona || !chatInput.value.trim()) return;
+            
+            const userMessage = chatInput.value.trim();
+            
+            // Add user message to chat
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'chat-message user';
+            userMsgDiv.innerHTML = `
+                <div class="sender">You</div>
+                ${userMessage}
+            `;
+            chatContainer.appendChild(userMsgDiv);
+            
+            chatInput.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // Show loading
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'chat-message persona';
+            loadingDiv.innerHTML = `
+                <div class="sender">${selectedPersona.name}</div>
+                <span class="loading-spinner"></span> Thinking...
+            `;
+            chatContainer.appendChild(loadingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            try {
+                const response = await fetch(window.CONFIG.chatEndpointUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        persona_attributes: personaAttributes.value.trim(),
+                        message: userMessage
+                    })
+                });
+                
+                const result = await response.json();
+                
+                // Remove loading message
+                chatContainer.removeChild(loadingDiv);
+                
+                // Add persona response
+                const personaResponse = result.persona_response || "I'm having trouble responding right now. Please try again.";
+                const responseMsgDiv = document.createElement('div');
+                responseMsgDiv.className = 'chat-message persona';
+                responseMsgDiv.innerHTML = `
+                    <div class="sender">${selectedPersona.name}</div>
+                    ${personaResponse}
+                `;
+                chatContainer.appendChild(responseMsgDiv);
+                
+            } catch (error) {
+                // Remove loading and show error
+                chatContainer.removeChild(loadingDiv);
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'chat-message persona';
+                errorDiv.innerHTML = `
+                    <div class="sender">System</div>
+                    Sorry, I couldn't connect to ${selectedPersona.name} right now. Please check your connection and try again.
+                `;
+                chatContainer.appendChild(errorDiv);
+            }
+            
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Event Listeners
+        sendChatBtn.addEventListener('click', sendMessage);
+        
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Mode switching functionality
+        function updateFormMode() {
+            const juliusSheetUrl = document.getElementById('julius_personas_sheet_url').value;
+            const personaCountField = document.getElementById('persona_count').parentElement;
+            const submitBtn = document.getElementById('generateBtn');
+
+            if (juliusSheetUrl && juliusSheetUrl.trim() !== '') {
+                // Enrichment mode
+                personaCountField.style.display = 'none'; // Hide persona count in enrichment mode
+                submitBtn.textContent = 'Enrich Personas from Julius Sheet';
+
+                // Show helpful message about enrichment mode
+                showEnrichmentModeHelp();
+            } else {
+                // Generation mode
+                personaCountField.style.display = 'block';
+                submitBtn.textContent = 'Generate Digital Twins';
+
+                // Hide enrichment mode help
+                hideEnrichmentModeHelp();
+            }
+        }
+
+        function showEnrichmentModeHelp() {
+            let helpDiv = document.getElementById('enrichment-help');
+            if (!helpDiv) {
+                helpDiv = document.createElement('div');
+                helpDiv.id = 'enrichment-help';
+                helpDiv.className = 'persona-count';
+                helpDiv.style.backgroundColor = '#e6f3ff';
+                helpDiv.style.border = '1px solid #4a90a4';
+                helpDiv.innerHTML = `
+                    <strong>🎯 Enrichment Mode Active</strong><br>
+                    <small>We'll import personas from your Julius sheet and enrich them with social media insights,
+                    professional backgrounds, and legal-specific data based on your uploaded documents.</small>
+                `;
+
+                // Insert after the Julius sheet URL field
+                const juliusField = document.getElementById('julius_personas_sheet_url').parentElement;
+                juliusField.parentNode.insertBefore(helpDiv, juliusField.nextSibling);
+            }
+        }
+
+        function hideEnrichmentModeHelp() {
+            const helpDiv = document.getElementById('enrichment-help');
+            if (helpDiv) {
+                helpDiv.remove();
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
+
+            // Set up file upload handlers for background documents
+            handleFileUpload('complaint_file', 'complaintFiles');
+            handleFileUpload('research_file', 'researchFiles');
+
+            // Set up multiple file upload for creative images
+            handleMultipleFileUpload('creative_images', 'creativeImageFiles', 10);
+
+            // Set up mode switching
+            const juliusUrlField = document.getElementById('julius_personas_sheet_url');
+            juliusUrlField.addEventListener('input', updateFormMode);
+            juliusUrlField.addEventListener('blur', updateFormMode);
+
+            // Initial mode check
+            updateFormMode();
+
+            // Set up form submission handler
+            console.log('🔧 Attaching form submit listener to:', generateForm);
+
+            if (!generateForm) {
+                console.error('❌ generateForm not found!');
+            } else {
+                generateForm.addEventListener('submit', async function(e) {
+                    console.log('🎯 Form submit event triggered - preventing default');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🎯 Continuing with AJAX submission');
+
+                    const formData = new FormData();
+
+                    formData.append('matter', document.getElementById('matter').value);
+                    formData.append('target_description', document.getElementById('target_description').value);
+                    formData.append('keywords', document.getElementById('keywords').value);
+                    formData.append('persona_count', document.getElementById('persona_count').value || '');
+                    formData.append('email', document.getElementById('email').value);
+                    formData.append('julius_personas_sheet_url', document.getElementById('julius_personas_sheet_url').value || '');
+                    formData.append('complaint_file_url', document.getElementById('complaint_file_url').value || '');
+                    formData.append('research_file_url', document.getElementById('research_file_url').value || '');
+
+                    // Add creative data
+                    const creatives = collectCreativeData();
+                    if (creatives.length > 0) {
+                        formData.append('creatives', JSON.stringify(creatives));
+
+                        // Collect creative image URLs
+                        const creativeImageUrls = creatives
+                            .filter(c => c.image_url)
+                            .map(c => c.image_url)
+                            .join(',');
+
+                        formData.append('creative_images', creativeImageUrls);
+                    }
+
+                    showLoading(generateBtn, 'Generating Digital Twins...');
+                    showStatus(generateStatus, 'Processing your request... This may take 2-3 minutes. You will receive the report via email.', 'loading');
+
+                    try {
+                        console.log('🚀 Submitting form to:', window.CONFIG.generateWorkflowUrl);
+                        console.log('📋 Form data:', Object.fromEntries(formData.entries()));
+
+                        const response = await fetch(window.CONFIG.generateWorkflowUrl, {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        console.log('📡 Response status:', response.status);
+                        console.log('📡 Response headers:', response.headers);
+
+                        if (response.ok) {
+                            showStatus(generateStatus,
+                                'Digital twins generation started successfully! You will receive the report via email within a few minutes.',
+                                'success'
+                            );
+
+                            // Start countdown for when personas will be ready
+                            startPersonaCountdown();
+
+                            generateForm.reset();
+                            // Reset image display
+                            document.getElementById('creativeImageFiles').innerHTML = '';
+                        } else {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        }
+                    } catch (error) {
+                        console.error('❌ Form submission error:', error);
+                        console.error('❌ Error details:', {
+                            message: error.message,
+                            stack: error.stack,
+                            name: error.name
+                        });
+                        showStatus(generateStatus,
+                            `Error generating digital twins: ${error.message}. Please check your network connection and try again.`,
+                            'error'
+                        );
+                    } finally {
+                        hideLoading(generateBtn, 'Generate Digital Twins');
+                    }
+                });
+            }
+
+            console.log('Signal Digital Twin Platform loaded');
+        });
+    </script>
+ <!-- Replace your blob upload script in index.html with this: -->
+
+<script type="module">
+// Simple file upload that works with your API upload endpoint
+const setupFileUpload = (inputId, statusId, hiddenId) => {
+  const input = document.getElementById(inputId);
+  const status = document.getElementById(statusId);
+  
+  input.addEventListener("change", async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      status.textContent = "";
+      document.getElementById(hiddenId).value = "";
+      return;
+    }
+
+    // Show upload starting
+    status.textContent = "Uploading...";
+    
+    try {
+      // Create FormData for the upload
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      // Upload to your API
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      
+      // Success!
+      status.innerHTML = `✅ Uploaded: ${file.name}`;
+      document.getElementById(hiddenId).value = result.url;
+      
+      console.log('✅ File uploaded:', result.url);
+      
+    } catch (error) {
+      console.error('❌ Upload failed:', error);
+      status.textContent = `❌ Failed: ${error.message}`;
+      document.getElementById(hiddenId).value = "";
+    }
+  });
+};
+
+// Set up file uploads for background documents
+setupFileUpload("complaint_file", "complaintStatus", "complaint_file_url");
+setupFileUpload("research_file", "researchStatus", "research_file_url");
+
+console.log('Signal Digital Twin Platform loaded');
+</script>
+<script>
+console.log("TEST: script loaded and runs!");
+</script>
+
+</body>
+</html>
